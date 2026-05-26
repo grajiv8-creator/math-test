@@ -56,6 +56,7 @@
 
   <div id="startScreen" class="card center" style="padding:36px 24px;">
     <div class="iconcircle">🧮</div>
+    <p style="color:var(--info); font-weight:600; font-size:15px; margin-bottom:2px;">Aditi's Maths Challenge</p>
     <h1>Class 3 Maths Test</h1>
     <p style="color:var(--muted); margin-bottom:4px;">CBSE · 30 questions · moderately difficult</p>
     <p style="color:var(--muted); margin-bottom:24px;">You have <strong style="color:var(--text);">60 minutes</strong>. The timer starts when you click begin.</p>
@@ -64,7 +65,7 @@
 
   <div id="testArea" class="hidden">
     <div class="topbar">
-      <div style="font-size:15px; color:var(--muted);">Answered <span id="progress" style="color:var(--text); font-weight:600;">0 / 30</span></div>
+      <div style="font-size:15px; color:var(--muted);"><span style="color:var(--info); font-weight:600; margin-right:8px;">Aditi</span>Answered <span id="progress" style="color:var(--text); font-weight:600;">0 / 30</span></div>
       <div id="timerBox" class="timer">⏱ <span id="timer">60:00</span></div>
     </div>
     <div id="questions"></div>
@@ -191,6 +192,7 @@
     html += '<div class="bigscore">'+score+' <span>/ '+Q.length+'</span></div>';
     html += '<p style="color:var(--muted);">Score: '+pct+'%'+(unanswered>0?' · '+unanswered+' left blank':'')+'</p>';
     html += '<div style="margin-top:20px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">';
+    html += '<button id="certBtn" style="font-size:15px; padding:10px 22px; background:var(--success-bg); color:var(--success); border-color:var(--success);">🏆 Download certificate</button>';
     html += '<button id="reviewBtn" style="font-size:15px; padding:10px 22px;">Review answers</button>';
     html += '<button id="retryBtn" style="font-size:15px; padding:10px 22px;">Try again</button>';
     html += '</div></div>';
@@ -201,6 +203,10 @@
 
     document.getElementById('retryBtn').addEventListener('click', function(){
       location.reload();
+    });
+
+    document.getElementById('certBtn').addEventListener('click', function(){
+      makeCertificate(score, Q.length, pct);
     });
 
     document.getElementById('reviewBtn').addEventListener('click', function(){
@@ -230,6 +236,74 @@
     });
 
     window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function makeCertificate(score, total, pct){
+    var c = document.createElement('canvas');
+    c.width = 1200; c.height = 850;
+    var x = c.getContext('2d');
+
+    x.fillStyle = '#fffdf7';
+    x.fillRect(0,0,1200,850);
+
+    x.strokeStyle = '#185fa5';
+    x.lineWidth = 10;
+    x.strokeRect(30,30,1140,790);
+    x.strokeStyle = '#5dcaa5';
+    x.lineWidth = 3;
+    x.strokeRect(48,48,1104,754);
+
+    x.textAlign = 'center';
+
+    x.fillStyle = '#185fa5';
+    x.font = '600 30px Georgia, serif';
+    x.fillText('CERTIFICATE OF ACHIEVEMENT', 600, 160);
+
+    x.strokeStyle = '#5dcaa5';
+    x.lineWidth = 2;
+    x.beginPath(); x.moveTo(450,185); x.lineTo(750,185); x.stroke();
+
+    x.fillStyle = '#6b6b66';
+    x.font = '22px Georgia, serif';
+    x.fillText('This certificate is proudly presented to', 600, 250);
+
+    x.fillStyle = '#1f1f1d';
+    x.font = '600 64px Georgia, serif';
+    x.fillText('Aditi', 600, 340);
+
+    x.strokeStyle = '#e2e2dc';
+    x.lineWidth = 2;
+    x.beginPath(); x.moveTo(400,365); x.lineTo(800,365); x.stroke();
+
+    x.fillStyle = '#6b6b66';
+    x.font = '22px Georgia, serif';
+    x.fillText('for completing the', 600, 420);
+    x.fillStyle = '#1f1f1d';
+    x.font = '600 30px Georgia, serif';
+    x.fillText('Class 3 CBSE Maths Test', 600, 465);
+
+    x.fillStyle = '#0f6e56';
+    x.font = '600 90px Georgia, serif';
+    x.fillText(score + ' / ' + total, 600, 580);
+    x.fillStyle = '#6b6b66';
+    x.font = '26px Georgia, serif';
+    x.fillText('Score: ' + pct + '%', 600, 625);
+
+    var star = pct>=80 ? '★ ★ ★' : pct>=60 ? '★ ★ ☆' : '★ ☆ ☆';
+    x.fillStyle = '#ef9f27';
+    x.font = '40px Georgia, serif';
+    x.fillText(star, 600, 690);
+
+    var today = new Date();
+    var dateStr = today.getDate() + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][today.getMonth()] + ' ' + today.getFullYear();
+    x.fillStyle = '#6b6b66';
+    x.font = '20px Georgia, serif';
+    x.fillText('Date: ' + dateStr, 600, 760);
+
+    var link = document.createElement('a');
+    link.download = 'Aditi-Maths-Certificate.png';
+    link.href = c.toDataURL('image/png');
+    link.click();
   }
 
   document.getElementById('startBtn').addEventListener('click', function(){
