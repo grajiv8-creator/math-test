@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Class 3 Maths Test</title>
+<style>
+  :root{
+    --bg:#f4f4f0; --card:#ffffff; --text:#1f1f1d; --muted:#6b6b66;
+    --border:#e2e2dc; --info:#185fa5; --info-bg:#e6f1fb;
+    --success:#0f6e56; --success-bg:#e1f5ee; --success-border:#5dcaa5;
+    --danger:#a32d2d; --danger-bg:#fceaea; --danger-border:#f09595;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6; padding:16px;
+  }
+  .wrap{max-width:660px; margin:0 auto;}
+  h1{font-size:22px; font-weight:600; margin:0 0 6px;}
+  h2{font-size:20px; font-weight:600; margin:0 0 4px;}
+  p{margin:0;}
+  button{
+    font-family:inherit; cursor:pointer; border:1px solid var(--border);
+    background:#fff; color:var(--text); border-radius:8px; transition:all .12s;
+  }
+  button:hover{background:#f0f0ea;}
+  button:active{transform:scale(.98);}
+  .card{background:var(--card); border:1px solid var(--border); border-radius:12px;}
+  .center{text-align:center;}
+  .iconcircle{width:56px;height:56px;border-radius:50%;background:var(--info-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;}
+  .startbtn{font-size:16px; padding:12px 32px; font-weight:500;}
+  .topbar{
+    position:sticky; top:0; z-index:10; display:flex; align-items:center;
+    justify-content:space-between; background:var(--card); border:1px solid var(--border);
+    border-radius:12px; padding:12px 16px; margin-bottom:20px;
+  }
+  .timer{font-size:22px; font-weight:600; font-variant-numeric:tabular-nums; display:flex; align-items:center; gap:8px;}
+  .qcard{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 20px; margin-bottom:12px;}
+  .qnum{color:var(--muted); margin-right:6px;}
+  .opts{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:8px;}
+  .opt{text-align:left; padding:10px 14px; font-size:15px;}
+  .opt.sel{background:var(--info-bg); border-color:var(--info); color:var(--info); font-weight:500;}
+  .submitbtn{font-size:16px; padding:12px 36px; background:var(--info-bg); color:var(--info); border-color:var(--info); font-weight:500;}
+  .bigscore{font-size:44px; font-weight:600; margin:14px 0;}
+  .bigscore span{color:var(--muted); font-size:26px;}
+  .rev{border-radius:12px; padding:14px 18px; margin-bottom:10px; border:1px solid var(--border);}
+  .rev.ok{border-color:var(--success-border);}
+  .rev.no{border-color:var(--danger-border);}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="startScreen" class="card center" style="padding:36px 24px;">
+    <div class="iconcircle">🧮</div>
+    <h1>Class 3 Maths Test</h1>
+    <p style="color:var(--muted); margin-bottom:4px;">CBSE · 30 questions · moderately difficult</p>
+    <p style="color:var(--muted); margin-bottom:24px;">You have <strong style="color:var(--text);">60 minutes</strong>. The timer starts when you click begin.</p>
+    <button id="startBtn" class="startbtn">▶ Start test</button>
+  </div>
+
+  <div id="testArea" class="hidden">
+    <div class="topbar">
+      <div style="font-size:15px; color:var(--muted);">Answered <span id="progress" style="color:var(--text); font-weight:600;">0 / 30</span></div>
+      <div id="timerBox" class="timer">⏱ <span id="timer">60:00</span></div>
+    </div>
+    <div id="questions"></div>
+    <div class="center" style="margin-top:24px;">
+      <button id="submitBtn" class="submitbtn">✓ Submit test</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden"></div>
+
+</div>
+
+<script>
+(function(){
+  var Q = [
+    {q:"Write the number for: 4 hundreds + 7 tens + 6 ones", o:["476","467","746","647"], a:0},
+    {q:"What is 345 + 278?", o:["613","623","523","633"], a:1},
+    {q:"What is 702 − 256?", o:["446","456","546","454"], a:0},
+    {q:"Which is the smallest? 408, 480, 804, 840", o:["408","480","804","840"], a:0},
+    {q:"What comes just before 600?", o:["601","590","599","609"], a:2},
+    {q:"7 × 8 = ?", o:["54","56","48","64"], a:1},
+    {q:"What is 63 ÷ 9?", o:["6","8","7","9"], a:2},
+    {q:"Round 67 to the nearest ten.", o:["60","70","65","80"], a:1},
+    {q:"How many sides does a hexagon have?", o:["5","6","7","8"], a:1},
+    {q:"What is 9 × 6?", o:["54","56","45","63"], a:0},
+    {q:"A box has 8 rows of pencils with 5 in each row. How many pencils?", o:["35","40","45","13"], a:1},
+    {q:"What is 1/2 of 18?", o:["6","8","9","12"], a:2},
+    {q:"Which fraction is the largest?", o:["1/2","1/4","1/3","1/6"], a:0},
+    {q:"How many minutes are there in 2 hours?", o:["100","120","60","140"], a:1},
+    {q:"The time is 3:45. What time will it be in 30 minutes?", o:["4:00","4:15","3:15","4:30"], a:1},
+    {q:"What is 250 + 250 + 250?", o:["650","700","750","850"], a:2},
+    {q:"How many ₹10 notes make ₹120?", o:["10","11","12","13"], a:2},
+    {q:"A pencil costs ₹15. What do 6 pencils cost?", o:["₹80","₹90","₹85","₹95"], a:1},
+    {q:"What is the place value of 5 in 658?", o:["5","50","500","5000"], a:1},
+    {q:"Continue the pattern: 5, 10, 15, 20, __", o:["22","24","25","30"], a:2},
+    {q:"How many days are there in 3 weeks?", o:["18","21","24","28"], a:1},
+    {q:"What is 400 − 175?", o:["215","235","225","325"], a:2},
+    {q:"Which number is even?", o:["37","53","48","61"], a:2},
+    {q:"What is 12 × 4?", o:["44","48","52","42"], a:1},
+    {q:"A ribbon is 1 metre long. How many centimetres is that?", o:["10","100","1000","50"], a:1},
+    {q:"What is 84 ÷ 7?", o:["11","12","13","14"], a:1},
+    {q:"Half a dozen plus a dozen equals how many?", o:["12","16","18","24"], a:2},
+    {q:"What is the sum of the first 5 odd numbers (1+3+5+7+9)?", o:["20","25","24","30"], a:1},
+    {q:"A jug holds 2 litres. How many millilitres is that?", o:["200","2000","20","20000"], a:1},
+    {q:"If today is Wednesday, what day will it be after 4 days?", o:["Saturday","Sunday","Monday","Friday"], a:1}
+  ];
+
+  var answers = new Array(Q.length).fill(null);
+  var timeLeft = 60 * 60;
+  var timerId = null;
+  var finished = false;
+
+  var startScreen = document.getElementById('startScreen');
+  var testArea = document.getElementById('testArea');
+  var resultArea = document.getElementById('resultArea');
+  var qWrap = document.getElementById('questions');
+  var timerEl = document.getElementById('timer');
+  var timerBox = document.getElementById('timerBox');
+  var progressEl = document.getElementById('progress');
+
+  function fmt(s){
+    var m = Math.floor(s/60);
+    var sec = s % 60;
+    return m + ":" + (sec<10?"0":"") + sec;
+  }
+
+  function updateProgress(){
+    var done = answers.filter(function(x){return x!==null;}).length;
+    progressEl.textContent = done + " / " + Q.length;
+  }
+
+  function buildQuestions(){
+    var html = "";
+    Q.forEach(function(item, i){
+      html += '<div class="qcard">';
+      html += '<p style="font-weight:500; margin-bottom:10px;"><span class="qnum">Q'+(i+1)+'.</span>'+item.q+'</p>';
+      html += '<div class="opts">';
+      item.o.forEach(function(opt, j){
+        html += '<button class="opt" data-q="'+i+'" data-o="'+j+'">'+opt+'</button>';
+      });
+      html += '</div></div>';
+    });
+    qWrap.innerHTML = html;
+
+    var btns = qWrap.querySelectorAll('.opt');
+    btns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(finished) return;
+        var qi = +btn.getAttribute('data-q');
+        answers[qi] = +btn.getAttribute('data-o');
+        var siblings = qWrap.querySelectorAll('.opt[data-q="'+qi+'"]');
+        siblings.forEach(function(b){ b.classList.remove('sel'); });
+        btn.classList.add('sel');
+        updateProgress();
+      });
+    });
+  }
+
+  function tick(){
+    timeLeft--;
+    timerEl.textContent = fmt(timeLeft);
+    if(timeLeft <= 300){ timerBox.style.color = 'var(--danger)'; }
+    if(timeLeft <= 0){
+      clearInterval(timerId);
+      finish(true);
+    }
+  }
+
+  function finish(timeUp){
+    if(finished) return;
+    finished = true;
+    clearInterval(timerId);
+    var score = 0;
+    Q.forEach(function(item,i){ if(answers[i]===item.a) score++; });
+    var pct = Math.round(score/Q.length*100);
+    var unanswered = answers.filter(function(x){return x===null;}).length;
+
+    testArea.classList.add('hidden');
+    var msg = pct>=80 ? "Excellent work!" : pct>=60 ? "Good effort, keep practising!" : "Nice try — let's review the tricky ones.";
+
+    var html = '<div class="card center" style="padding:36px 24px; margin-bottom:20px;">';
+    if(timeUp){ html += '<p style="color:var(--danger); margin-bottom:8px;">⏱ Time is up!</p>'; }
+    html += '<h2>'+msg+'</h2>';
+    html += '<div class="bigscore">'+score+' <span>/ '+Q.length+'</span></div>';
+    html += '<p style="color:var(--muted);">Score: '+pct+'%'+(unanswered>0?' · '+unanswered+' left blank':'')+'</p>';
+    html += '<div style="margin-top:20px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">';
+    html += '<button id="reviewBtn" style="font-size:15px; padding:10px 22px;">Review answers</button>';
+    html += '<button id="retryBtn" style="font-size:15px; padding:10px 22px;">Try again</button>';
+    html += '</div></div>';
+    html += '<div id="reviewWrap" class="hidden"></div>';
+
+    resultArea.innerHTML = html;
+    resultArea.classList.remove('hidden');
+
+    document.getElementById('retryBtn').addEventListener('click', function(){
+      location.reload();
+    });
+
+    document.getElementById('reviewBtn').addEventListener('click', function(){
+      var rw = document.getElementById('reviewWrap');
+      if(rw.classList.contains('hidden')){
+        var rh = '';
+        Q.forEach(function(item,i){
+          var correct = answers[i]===item.a;
+          var blank = answers[i]===null;
+          rh += '<div class="rev '+(correct?'ok':'no')+'">';
+          rh += '<p style="font-weight:500; margin-bottom:6px;"><span class="qnum">Q'+(i+1)+'.</span>'+item.q+'</p>';
+          if(correct){
+            rh += '<p style="color:var(--success); font-size:14px;">✓ Correct: '+item.o[item.a]+'</p>';
+          } else {
+            rh += '<p style="color:var(--danger); font-size:14px; margin-bottom:2px;">✗ '+(blank?'Left blank':'Your answer: '+item.o[answers[i]])+'</p>';
+            rh += '<p style="color:var(--success); font-size:14px;">Correct answer: '+item.o[item.a]+'</p>';
+          }
+          rh += '</div>';
+        });
+        rw.innerHTML = rh;
+        rw.classList.remove('hidden');
+        this.textContent = 'Hide review';
+      } else {
+        rw.classList.add('hidden');
+        this.textContent = 'Review answers';
+      }
+    });
+
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  document.getElementById('startBtn').addEventListener('click', function(){
+    startScreen.classList.add('hidden');
+    testArea.classList.remove('hidden');
+    buildQuestions();
+    updateProgress();
+    timerEl.textContent = fmt(timeLeft);
+    timerId = setInterval(tick, 1000);
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', function(){
+    var blank = answers.filter(function(x){return x===null;}).length;
+    var ok = true;
+    if(blank > 0){
+      ok = confirm(blank + ' question'+(blank>1?'s are':' is')+' still blank. Submit anyway?');
+    }
+    if(ok) finish(false);
+  });
+})();
+</script>
+</body>
+</html>
